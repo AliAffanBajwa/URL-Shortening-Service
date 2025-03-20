@@ -17,9 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView
+from shortener.views import StatsView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='shortener/index.html'), name='home'),
+    path('stats/', StatsView.as_view(template_name='shortener/stats.html'), name='stats_page'),
     path('', include('shortener.urls')),
 ]
