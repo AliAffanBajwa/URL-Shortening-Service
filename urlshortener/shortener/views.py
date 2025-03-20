@@ -7,6 +7,7 @@ from .serializers import ShortURLSerializer
 from django.http import HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.views.generic import TemplateView
 
 # Create your views here.
 @method_decorator(csrf_exempt, name='dispatch')
@@ -44,14 +45,11 @@ class URLDetailView(APIView):
         serializer = ShortURLSerializer(url, data=request.data, partial=True)
         
         if serializer.is_valid():
-            # Check if the original_url is being updated
-            new_url = request.data.get('url')  # Assuming 'url' is the input field name
+            new_url = request.data.get('url')
             if new_url and new_url != url.original_url:
-                # If the original_url is changing, generate a new short_code
-                url.short_code = url.generate_short_code()
+                url.short_code = url.generate_short_code()  
             serializer.save()
             
-            # Prepare response data to match your API spec
             response_data = {
                 'id': str(url.id),
                 'url': url.original_url,
@@ -95,3 +93,6 @@ class URLStatsView(APIView):
             'updatedAt': url.updated_at.isoformat() + 'Z',
             'accessCount': url.access_count
         })
+
+class StatsView(TemplateView):
+    template_name = "shortener/stats.html"
