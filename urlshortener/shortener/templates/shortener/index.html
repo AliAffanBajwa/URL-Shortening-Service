@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 2.5rem;
+            transition: transform 0.3s ease;
+        }
+        .container:hover {
+            transform: translateY(-5px);
+        }
+        h1 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+        .form-control {
+            border-radius: 10px;
+            padding: 0.75rem;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #4dabf7;
+            box-shadow: 0 0 0 0.2rem rgba(77, 171, 247, 0.25);
+        }
+        .btn-primary {
+            background: linear-gradient(45deg, #4dabf7, #228be6);
+            border: none;
+            border-radius: 10px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(77, 171, 247, 0.4);
+            background: linear-gradient(45deg, #339af0, #1c7ed6);
+        }
+        #result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background: #e7f5ff;
+            color: #1c7ed6;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>URL Shortener</h1>
+        <form id="shortenForm">
+            <div class="mb-3">
+                <input type="url" 
+                       class="form-control" 
+                       id="urlInput" 
+                       placeholder="Enter URL to shorten" 
+                       required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Shorten</button>
+        </form>
+        <div id="result" class="d-none"></div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"></script>
+    
+    <script>
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        document.getElementById('shortenForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = document.getElementById('urlInput').value;
+            const csrfToken = getCookie('csrftoken');
+            const resultDiv = document.getElementById('result');
+            
+            try {
+                const response = await fetch('/shorten/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken,
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    const shortUrl = `${window.location.origin}/r/${data.shortCode}`;
+                    resultDiv.innerHTML = `
+                        Short URL: <a href="${shortUrl}" target="_blank" class="text-decoration-none">${shortUrl}</a>
+                    `;
+                    resultDiv.classList.remove('d-none');
+                    resultDiv.classList.add('animate__animated', 'animate__fadeIn');
+                } else {
+                    resultDiv.innerHTML = `Error: ${JSON.stringify(data)}`;
+                    resultDiv.classList.remove('d-none');
+                    resultDiv.classList.add('bg-danger', 'text-white');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `Error: ${error.message}`;
+                resultDiv.classList.remove('d-none');
+                resultDiv.classList.add('bg-danger', 'text-white');
+            }
+        });
+    </script>
+    <!-- Optional: Add Animate.css for animations -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+</body>
+</html>
