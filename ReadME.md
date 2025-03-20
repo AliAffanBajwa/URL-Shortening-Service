@@ -10,9 +10,6 @@ A Django-based URL shortening service that allows users to shorten long URLs, re
 - [Installation](#installation)
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
-- [Front-End](#front-end)
-- [Fix for Long URL Overflow](#fix-for-long-url-overflow)
-- [Contributing](#contributing)
 - [License](#license)
 
 ## Features
@@ -69,7 +66,7 @@ urlshortener/
 
 1. **Clone the Repository**:
    ```bash
-   git clone [https://github.com/AliAffanBajwa/URL-Shortening-Service.git]
+   git clone https://github.com/AliAffanBajwa/URL-Shortening-Service.git
    cd urlshortener
    ```
 
