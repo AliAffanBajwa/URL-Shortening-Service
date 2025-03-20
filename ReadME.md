@@ -10,7 +10,6 @@ A Django-based URL shortening service that allows users to shorten long URLs, re
 - [Installation](#installation)
 - [Usage](#usage)
 - [API Endpoints](#api-endpoints)
-- [License](#license)
 
 ## Features
 
@@ -138,11 +137,5 @@ The project uses Django REST Framework to provide the following API endpoints:
 | PUT    | `/<short_code>/`        | Update the URL for a short code      |
 | DELETE | `/<short_code>/`        | Delete a shortened URL               |
 | GET    | `/r/<short_code>/`      | Redirect to the original URL         |
-
-
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ---
