@@ -1,2 +1,10 @@
-env
 db.sqlite3
+env/
+
+/.idea
+.idea
+.DS_Store
+*.pyc
+*.jpg
+*.png
+**/__pycache__/
